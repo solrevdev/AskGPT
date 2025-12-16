@@ -16,13 +16,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dotnet-version: ['8.0.x', '10.0.x']
+        dotnet-version: ['8.0.x', '9.0.x', '10.0.x']
     steps:
     - uses: actions/checkout@v3
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: ${{ matrix.dotnet-version }}
+        dotnet-quality: 'preview'
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
@@ -31,7 +32,7 @@ jobs:
       run: dotnet pack --no-build -c Release -p:Version=${{ env.VERSION }}
     - name: Upload package
       if: matrix.dotnet-version == '10.0.x'
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: AskGPT-${{ env.VERSION }}-Package
         path: AskGPT/PackageOutput
